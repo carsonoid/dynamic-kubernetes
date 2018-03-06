@@ -1,0 +1,13 @@
+# This group will split up the spot nodes in the cluster. Tainting some for etl
+# and the rest for queue jobs. That means that pods which need to be on the spot
+# nodes will need to tolerate the taint
+apiVersion: assignments.director.k8s.io/v1alpha1
+kind: NodeAssignmentGroup
+metadata:
+  name: services
+spec:
+  targetLabels:
+    nodetype-general: "true"
+  defaultAssignment:
+    name: "any"
+    mode: LabelOnly

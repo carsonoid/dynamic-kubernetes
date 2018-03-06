@@ -1,0 +1,19 @@
+# This rule will make sure service workloads go on serice assigned nodes
+apiVersion: assignments.director.k8s.io/v1alpha1
+kind: PodAssignmentRule
+metadata:
+  name: services
+spec:
+  targetLabels:
+    workload: service
+  scheduling:
+    mergeStrategy: OverwriteAll
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchExpressions:
+            - key: nag.assignments.director.k8s.io/services
+              operator: In
+              values:
+              - "any"

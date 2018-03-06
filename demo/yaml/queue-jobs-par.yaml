@@ -1,0 +1,24 @@
+# This rule will make sure that etl jobs must go on targeted nodes
+# and that they tolerate the taint added by the jobs nag
+apiVersion: assignments.director.k8s.io/v1alpha1
+kind: PodAssignmentRule
+metadata:
+  name: queue-jobs
+spec:
+  targetLabels:
+    workload: queue
+  scheduling:
+    mergeStrategy: OverwriteAll
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchExpressions:
+            - key: nag.assignments.director.k8s.io/jobs
+              operator: In
+              values:
+              - "queue"
+    tolerations:
+    - key: nag.assignments.director.k8s.io/jobs
+      operator: Equal
+      value: queue
